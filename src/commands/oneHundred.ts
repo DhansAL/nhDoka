@@ -33,11 +33,19 @@ export const oneHundred: CommandInt = {
     await targetCamperData.save();
 
     const oneHundredEmbed =  new MessageEmbed();
+
     oneHundredEmbed.setTitle("100 days of code");
     oneHundredEmbed.setDescription(text);
     oneHundredEmbed.setAuthor(author.username+'#'+author.discriminator,author.displayAvatarURL());
+
     oneHundredEmbed.addField("Round",targetCamperData.round.toString(),true);
     oneHundredEmbed.addField("Day",targetCamperData.day.toString(),true);
+    oneHundredEmbed.setFooter("Day completed: " + new Date(targetCamperData.timestamp).toLocaleDateString());// locale-specific string based on the location of bot's server.
+
+    await channel.send(JSON.stringify(oneHundredEmbed));
+    await message.delete();
+
+
 
 }
 } 
