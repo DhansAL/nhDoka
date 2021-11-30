@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 import { CommandInt } from "../interfaces/CommandInt";
 import CamperModel from "../models/CamperModel";
 
@@ -30,5 +30,14 @@ export const oneHundred: CommandInt = {
             targetCamperData.round++;
     }
     targetCamperData.timestamp = Date.now();
+    await targetCamperData.save();
+
+    const oneHundredEmbed =  new MessageEmbed();
+    oneHundredEmbed.setTitle("100 days of code");
+    oneHundredEmbed.setDescription(text);
+    oneHundredEmbed.setAuthor(author.username+'#'+author.discriminator,author.displayAvatarURL());
+    oneHundredEmbed.addField("Round",targetCamperData.round.toString(),true);
+    oneHundredEmbed.addField("Day",targetCamperData.day.toString(),true);
+
 }
-}
+} 
