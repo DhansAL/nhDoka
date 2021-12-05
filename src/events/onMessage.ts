@@ -1,17 +1,19 @@
-import { Message } from "discord.js";
+import { Interaction } from "discord.js";
 import { CommandList } from "../commands/_CommandList";
-//message parameter with the Message type.
-export const onMessage= async (message :Message)=>{ 
-    const prefix = "!";
 
-if (!message.content.startsWith(prefix)) return;
-if(message.author.bot)return;
-
-for(const Command of CommandList){
-    if(message.content.startsWith(prefix + Command.name)){
-        await Command.run(message);
-        break;
+export const onInteraction = async (
+  interaction: Interaction
+): Promise<void> => {
+  try {
+    if (interaction.isCommand()) {
+      for (const Command of CommandList) {
+        if (interaction.commandName === Command.data.name) {
+          await Command.run(interaction);
+          break;
+        }
+      }
     }
-}
-
-}
+  } catch (err) {
+    console.log("onInteraction event", err);
+  }
+};

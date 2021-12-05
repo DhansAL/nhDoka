@@ -1,6 +1,6 @@
 import { CommandInt } from "../interfaces/CommandInt";
-import CamperModel from "../models/CamperModel";
-import {Message, MessageEmbed } from "discord.js";
+import CamperModel from "../database/models/CamperModel";
+import { Message, MessageEmbed } from "discord.js";
 
 export const view: CommandInt = {
   name: "view",
