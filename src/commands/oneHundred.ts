@@ -15,5 +15,31 @@ export const oneHundred: CommandInt = {
         .setRequired(true)
     ) as SlashCommandBuilder,
 
-  run: async (interaction) => {},
+  run: async (interaction) => {
+    try{
+      await interaction.deferReply();
+      const {user} = interaction;
+      const text = interaction.options.getString("message");
+
+      if(!text){
+        await interaction.editReply({
+          content: 
+          "the message argument is requiered",
+        });
+        return;
+      }
+      
+      const targetCamper = await getCamperData(user.id);
+
+      if (!targetCamper) {
+        await interaction.editReply({
+          content:
+            "There is an error with the database lookup. Please try again later.",
+        });
+        return;
+      }
+
+    
+    }
+  },
 };
