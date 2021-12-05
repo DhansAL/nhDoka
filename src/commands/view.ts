@@ -1,37 +1,51 @@
+import { SlashCommandBuilder } from "@discordjs/builders";
+import { MessageEmbed } from "discord.js";
 import { CommandInt } from "../interfaces/CommandInt";
-import CamperModel from "../database/models/CamperModel";
-import { Message, MessageEmbed } from "discord.js";
+import { getCamperData } from "../modules/getCamperData";
 
 export const view: CommandInt = {
-  name: "view",
-  description: "Views your 100 Days of Code progress.",
-  run: async (message) => {
-    const { author, channel } = message;
+  data: new SlashCommandBuilder()
+    .setName("view")
+    .setDescription("Shows your latest 100 days of code check in."),
+  run: async (interaction) => {
+    try {
+      await interaction.deferReply();
+      const { user } = interaction;
+      const targetCamper = await getCamperData(user.id);
 
-    const targetCamperData = await CamperModel.findOne({
-      discordId: author.id,
-    });
+      if (!targetCamper) {
+        await interaction.editReply({
+          content:
+            "There was an error with the database lookup. Please try again later.",
+        });
+        return;
+      }
 
-    if (!targetCamperData) {
-      await channel.send("You have not started the challenge yet.");
-      return;
+      if (!targetCamper.day) {
+        await interaction.editReply({
+          content:
+            "It looks like you have not started the 100 Days of Code challenge yet. Use `/100` and add your message to report your first day!",
+        });
+        return;
+      }
+
+      const camperEmbed = new MessageEmbed();
+      camperEmbed.setTitle("My 100DoC Progress");
+      camperEmbed.setDescription(
+        `Here is my 100 Days of Code progress. I last reported an update on ${new Date(
+          targetCamper.timestamp
+        ).toLocaleDateString()}.`
+      );
+      camperEmbed.addField("Round", targetCamper.round.toString(), true);
+      camperEmbed.addField("Day", targetCamper.day.toString(), true);
+      camperEmbed.setAuthor(
+        user.username + "#" + user.discriminator,
+        user.displayAvatarURL()
+      );
+
+      await interaction.editReply({ embeds: [camperEmbed] });
+    } catch (err) {
+      console.log("view command", err);
     }
-
-    const camperEmbed = new MessageEmbed();
-    camperEmbed.setTitle("My 100DoC Progress");
-    camperEmbed.setDescription(
-      `Here is my 100 Days of Code progress. I last reported an update on ${new Date(
-        targetCamperData.timestamp
-      ).toLocaleDateString()}.`
-    );
-    camperEmbed.addField("Round", targetCamperData.round.toString(), true);
-    camperEmbed.addField("Day", targetCamperData.day.toString(), true);
-    camperEmbed.setAuthor(
-      author.username + "#" + author.discriminator,
-      author.displayAvatarURL()
-    );
-
-    // await channel.send(camperEmbed)
-    await message.delete();
   },
 };
