@@ -4,7 +4,7 @@ import { APIApplicationCommandOption, Routes } from "discord-api-types/v9";
 import { CommandList } from "../commands/_CommandList";
 import { Client } from "discord.js";
 
-export const onReaady = async (nhDoka: Client): Promise<void> => {
+export const onReady = async (nhDoka: Client): Promise<void> => {
   try {
     const rest = new REST({ version: "9" }).setToken(
       process.env.BOT_TOKEN as string
@@ -13,7 +13,7 @@ export const onReaady = async (nhDoka: Client): Promise<void> => {
     //array of <{}>[] data of specific commands
     const commandData: {
       name: string;
-      description: string;
+      description?: string;
       type?: number;
       options?: APIApplicationCommandOption[];
     }[] = [];
@@ -26,8 +26,8 @@ export const onReaady = async (nhDoka: Client): Promise<void> => {
       ),
       { body: commandData }
     );
-    console.log("info", "nhDoka has connected to discord!");
+    console.log("info", "Bot has connected to Discord!");
   } catch (err) {
-    console.log("oops onReady event error", err);
+    console.log("onReady event", err);
   }
 };
