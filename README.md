@@ -1,3 +1,4 @@
-# firstDB-nhDoka
+# firstDB
+
 
 creating first ts discord bot
