@@ -20,7 +20,7 @@ TODO = ENABLE SENTRY BUG LOGGING
   nhDoka.on("ready", async () => await onReady(nhDoka));
 
   nhDoka.on(
-    "interactionCreate",
+    "interactionCreate", // interaction is deprecated
     async (interaction) => await onInteraction(interaction)
   );
   await connectDatabase();
